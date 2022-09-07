@@ -1,8 +1,131 @@
 <html>
-    <head>
-        <title>Create Service Request</title>
-    </head>
-    <body>
-        <iframe sandbox="allow-storage-access-by-user-activation allow-scripts allow-same-origin" src="https://odcsdev1-odcsdevinst2.builder.test.ocp.oc-test.com/ic/builder/rt/JL1002EMBED/1.0/webApps/web/" width="100%" height="100%" style="border:1px solid black;"></iframe>
-    </body>
+
+<head>
+  <style>
+    .container-visible {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    .container-invisible {
+      visibility: hidden;
+      opacity: 0;
+    }
+
+    .container {
+      background-color: white;
+      border-radius: 8px;
+      min-width: 400px;
+      position: fixed;
+      bottom: 96px;
+      right: 32px;
+      transition: width 1s ease-in-out, height 1s ease-in-out, right 1s ease-in-out, bottom 1s ease-in-out, visibility 0.5s linear, opacity 0.5s linear;   
+      box-shadow: 0px 0px 20px 0px rgb(0 0 0 / 80%)
+    }
+
+    .container-normal {
+      width: 20vw;
+      height: 75vh;
+    }
+
+    .container-max {
+      width:66.6vw;
+      height: calc(100vh - 128px);
+    }
+
+
+    #launch {
+      width: 48px;
+      height: 48px;
+      bottom: 32px;
+      right: 32px;
+      position: fixed;
+      animation-name: example;
+      animation-direction: alternate;
+      animation-timing-function: ease-out;
+      animation-duration: 0.5s;      
+      animation-iteration-count: 8;
+    }
+
+    @keyframes example {
+      from { bottom: 32px}
+      to { bottom: 64px}
+    }
+
+    .iframe {
+      width: 100%;
+      height: 100%;
+      border-radius: 8px;
+      border-width: 1px;
+      border-color: #ddd;
+      border-style: solid;
+    }
+
+    @media screen and (max-width: 640px) {
+      .container-normal {
+        width: 100vw;
+        height: calc(100vh - 96px);
+        right: 0;
+      }
+
+      .container-max {
+        width: 100vw;
+        height: 100vh;
+        bottom: 0;
+        right: 0;
+      }
+
+      .iframe {
+        border: 0;
+        border-radius: 0px;
+      }
+    }
+  </style>
+  <link rel="stylesheet" href="assets/css/stylesheet.css">
+  <script>
+    function toggleWidget() {
+      let className = document.getElementById('container').className;
+      if (className.includes('container-visible')) {
+        className = className.replace(/container-visible/g, 'container-invisible');
+      } else {
+        className = className.replace(/container-invisible/g, 'container-visible');
+      }
+
+      document.getElementById('container').className = className;
+    }
+
+    function sendMessage() {
+      document.getElementById("iframe").contentWindow.postMessage('create-service-request', '*');
+    }
+
+    function setProduct() {
+      document.getElementById("iframe").contentWindow.postMessage({name:'navigate', payload: {target: 'product', id: 'CRMITEM-AS54888-00182746'}}, '*');
+    }    
+
+    window.onmessage = function (event) {
+      if (event.data == 'maximize') {
+        document.getElementById('container').className =  document.getElementById('container').className.replace(/container-normal/g, 'container-max');
+      }
+      if (event.data == 'normalize') {
+        document.getElementById('container').className =  document.getElementById('container').className.replace(/container-max/g, 'container-normal');
+      }      
+    }; 
+  </script>
+</head>
+
+<body>
+  <!--
+  <div style="z-index: 0; width:100%; height:100%; position:fixed; top:0; left:0">
+    <iframe src="https://argon.jekyllthemes.io/" style="border:0; width:100%; height:100%"></iframe>
+  </div>
+  -->
+  <button onclick="setProduct()">Product</button>
+  <img id="launch" src="assets/images/chat.png" onclick="toggleWidget()">
+  <div id="container" class="container container-normal container-invisible">
+    <iframe class="iframe" id="iframe"
+      src="https://odcsdev1-odcsdevinst2.builder.test.ocp.oc-test.com/ic/builder/rt/JL020821D/1.0/webApps/dcs/">
+    </iframe>
+  </div>
+</body>
+
 </html>
